@@ -3,22 +3,13 @@ location: hdk-24
 location_nice: Heidekampgraben 24
 latitude: 52.477820743
 longitude: 13.47099781
-community: berlin
+community: true
 
 hosts:
   - hostname: hdk-24
     role: corerouter
     model: "speedport_w-504v-typ-a"
     wireless_profile: freifunk_default
-    host__rclocal__to_merge:
-      - |
-        # Enable legacy rates on 2 GHz to enable meshing with legacy neighbors
-        for radio in $(uci show wireless \
-          | grep ".band='2g'" \
-          | cut -d. -f2); do
-          uci set wireless.$radio.legacy_rates='1'
-        done
-        uci commit wireless; reload_config
 
 ipv6_prefix: "2001:bf7:840:2b00::/56"
 

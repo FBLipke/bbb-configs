@@ -1,35 +1,22 @@
-{% if 'collectd-mod-load' in packages %}
 LoadPlugin load
-{% endif %}
-
-{% if 'collectd-mod-uptime' in packages %}
 LoadPlugin uptime
-{% endif %}
-
-{% if 'collectd-mod-interface' in packages %}
 LoadPlugin interface
-{% endif %}
 
-{% if 'collectd-mod-ping' in packages %}
 LoadPlugin ping
-	{% for host in (collectd_ping_hosts | default([]) | union(dns_servers | default([]))) %}
+{% for host in collectd_ping_hosts %}
 <Plugin ping>
 	TTL 127
 	Interval 10
 	Host "{{ host }}"
 </Plugin>
-	{% endfor %}
-{% endif %}
+{% endfor %}
 
-{% if 'collectd-mod-memory' in packages %}
 LoadPlugin memory
 <Plugin memory>
 	ValuesPercentage false
 	ValuesAbsolute true
 </Plugin>
-{% endif %}
 
-{% if 'collectd-mod-network' in packages %}
 LoadPlugin network
 <Plugin network>
 	Server "{{ collectd_host }}"
@@ -38,7 +25,7 @@ LoadPlugin network
 	# Set MaxPacketSize because packages got dropped due to being to big
 	MaxPacketSize 1280
 </Plugin>
-{% endif %}
+
 
 {% if 'collectd-mod-olsrd' in packages %}
 LoadPlugin olsrd
@@ -48,10 +35,8 @@ LoadPlugin olsrd
 </Plugin>
 {% endif %}
 
-{% if 'collectd-mod-iwinfo' in packages %}
-	{% if wireless_devices is defined and wireless_profile != 'disable' and low_mem | default (false) is not true and low_flash | default (false) is not true %}
+{% if wireless_devices is defined and wireless_profile != 'disable' and low_mem is not true | default (true) and low_flash is not true | default (true) %}
 LoadPlugin iwinfo
-	{% endif %}
 {% endif %}
 
 {% if 'collectd-mod-conntrack' in packages %}

@@ -2,7 +2,8 @@
 target: ramips/mt7621
 brand_nice: MikroTik
 model_nice: hEX
-openwrt_version: 25.12-SNAPSHOT
+
+openwrt_version: 23.05-SNAPSHOT
 
 dsa_ports:
   - wan

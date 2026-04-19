@@ -5,14 +5,14 @@ location_nice: St.-Simeon-Kirche, Wassertorstraße 21, Berlin
 latitude: 52.500582
 longitude: 13.406656
 altitude: 105
-community: berlin
+community: true
 
 hosts:
   - hostname: simeon-core
     role: corerouter
-    model: "genexis_pulse-ex400"
-    wireless_profile: freifunk_default
-    flow_offload: hw
+    model: "ubnt_edgerouter-x"
+    poe_on: []
+    openwrt_version: 24.10-SNAPSHOT
 
 snmp_devices:
   - hostname: simeon-switch
@@ -27,9 +27,9 @@ snmp_devices:
     address: 10.31.104.132
     snmp_profile: airos_8
 
-  - hostname: simeon-l105
+  - hostname: simeon-emma
     address: 10.31.104.133
-    snmp_profile: af60
+    snmp_profile: airos_6
 
   - hostname: simeon-rhxb
     address: 10.31.104.134
@@ -57,6 +57,8 @@ airos_dfs_reset:
 # --MESH: 10.31.51.136/29
 # --DHCP: 10.31.104.0/25
 
+# TODO: There are still some old IPs reserved
+
 ipv6_prefix: "2001:bf7:750:3700::/56"
 
 networks:
@@ -74,7 +76,7 @@ networks:
 
   - vid: 12
     role: mesh
-    name: mesh_l105
+    name: mesh_emma
     prefix: 10.31.51.138/32
     ipv6_subprefix: -12
 
@@ -111,6 +113,6 @@ networks:
       simeon-switch: 2
       simeon-mgh: 3
       simeon-nord: 4
-      simeon-l105: 5
+      simeon-emma: 5
       simeon-rhxb: 6
       simeon-nord-60g: 7

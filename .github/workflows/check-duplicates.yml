@@ -1,18 +1,14 @@
 ---
 name: Check for duplicates
 
-on: [push, pull_request]
-
-permissions:
-  contents: read
-  actions: read
+on: [push, pull_request] # yamllint disable-line rule:truthy
 
 jobs:
   check-duplicates:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

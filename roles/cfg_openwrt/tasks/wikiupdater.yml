@@ -5,10 +5,6 @@
     state: directory
     mode: "731"
 
-- name: wikiupdater | Count Wireguard tunnel
-  set_fact:
-    tunnel_count: '{{ networks | selectattr("role", "equalto", "tunnel") | length }}'
-
 - name: wikiupdater | Generate outputfiles
   template:
     src: "templates/common/wikiupdater.j2"

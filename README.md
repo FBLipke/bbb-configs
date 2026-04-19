@@ -35,11 +35,11 @@ If we need someone to reproduce our setup, the person can just generate the imag
 
 ## Getting Started
 
-Using bbb-configs is quite simple. In the sections below you can find simple introductions to what you can do with bbb-configs. But before you can get started you might need to install some dependencies so everything will work properly.
+Using bbb-configs is quite simple. In the sections below you can find simple introductions to what you can do with bbb-configs. But before you can get started you might need to install some dependecies so everything will work properly.
 
 ### 1. Install OpenWRT build dependencies
 
-First install the OpenWRT build dependencies. You can find the dependencies for your specific Linux distribution [here](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#linux_gnu-linux_distributions). As of 07/2025 there arent all dependencies available for Apple M-Chips.
+First install the OpenWRT build dependencies. You can find the dependencies for your specific Linux distribution [here](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#linux_gnu-linux_distributions).
 
 ### 2. Install BBB-configs dependencies
 
@@ -52,6 +52,10 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 ```
+
+You can find what dependencies you need for your specific linux-distro [here](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#linux_gnu-linux_distributions).
+
+
 
 ### 3. What do you want to set up?
 
@@ -74,23 +78,6 @@ pip3 install -r requirements.txt
   ./generate-images.sh location1,host1,host2,location2,"host-*","location-*"
   ```
 
-  or by loading entries from a file, one per line (supports comments starting with #):
-
-  ```sh
-  ./generate-images.sh -l list.txt
-  ```
-
-  where `list.txt` contains:
-
-  ```
-  kotti
-  kotti-core
-  hdk-80
-  hdk-*
-  ```
-
-  Note: When using locations in a file, use the short name (e.g., `kotti`) - the script automatically converts it to the required `location_kotti` format. Wildcards like `hdk-*` will expand to all matching locations.
-
   or by passing running the ansible playbook directly with a limit parameter containing locations or hosts as a comma separated list.
 
   Note: Locations must be prefixed witch `location_` and within the location name `-` must be converted to `_`.
@@ -98,7 +85,6 @@ pip3 install -r requirements.txt
   ```sh
   ansible-playbook play.yml --limit location_loc_name,host --tags image
   ```
-
   #### Flash images
 
   After building firmware images you can update multiple routers using the mass-update script, which updates every node,that has an image in `tmp/images/`. This works best using SSH keys for authentication.
@@ -108,13 +94,6 @@ pip3 install -r requirements.txt
   ```
   ./mass-update.sh
   ```
-
-  Use the `-y` or `--yes` flag to skip the confirmation prompt:
-
-  ```
-  ./mass-update.sh -y
-  ```
-
   </details>
 - <details>
   <summary>locations</summary>
@@ -149,9 +128,9 @@ pip3 install -r requirements.txt
 
   </details>
 
-### 4. Contributing guidelines
+### 4. Contibuting guidelines
 
-To contribute your work, it is helpful to stick to the [contributing guidelines](https://github.com/freifunk-berlin/bbb-configs/blob/main/CONTRIBUTING.md#contributing-to-bbb-configs) so contributions are easy to understand and standardised.
+To contribute your work, it is helpful to stick to the [contributing guidelines](https://github.com/freifunk-berlin/bbb-configs/issues/785) so contributions are easy to understand and standardised.
 
 ### 5. Ansible Introduction
 
@@ -162,6 +141,8 @@ Ansible is a suite of software tools that enables infrastructure as code. It is 
 Make sure to install ansible and clone the bbb-configs repository. Also don`t forget to check your dependencies.
 
 Depending on your system you might need more requirements. If something fails check out [this OpenWRT page](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem).
+
+You can find more useful ansible tips in our [FAQ](https://github.com/freifunk-berlin/bbb-configs/blob/main/FAQ.md#faq).
 
 ## Developers and Maintainers
 

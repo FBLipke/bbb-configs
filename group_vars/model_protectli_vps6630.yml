@@ -2,9 +2,7 @@
 override_target: generic
 target: x86/64
 image_search_pattern: "*-ext4-combined-efi.img*"
-brand_nice: Protectli
-model_nice: Vault Pro VP6630
-openwrt_version: 24.10-SNAPSHOT
+model_nice: Protectli Vault Pro VP6630
 int_port: eth5 # 2nd SFP+ Port
 wireless_profile: disable
 

@@ -4,7 +4,7 @@ location_nice: Zwinglikirche, Rudolfstraße 14, 10245 Berlin
 latitude: 52.5035417
 longitude: 13.4547472
 altitude: 77
-community: berlin
+community: true
 
 hosts:
   - hostname: zwingli-core
@@ -149,16 +149,13 @@ networks:
     name: mesh_west
     prefix: 10.31.115.35/32
     ipv6_subprefix: -4
-    # prefer OLSR routing via sama over gub37 during issues with zwingli<->emma link
-    mesh_metric_lqm: ["default 0.5"]
-
 
   - vid: 14
     role: mesh
     name: mesh_sama
     prefix: 10.31.115.36/32
     ipv6_subprefix: -5
-    # prefer routing via emma over sama to use ohlauer as gateway
+    # prefer routing via emma over sama to use ohlauer as gateway)
     mesh_metric: 256
     mesh_metric_lqm: ["default 0.5"]
     ptp: true
