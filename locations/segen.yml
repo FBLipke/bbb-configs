@@ -1,6 +1,6 @@
 ---
 location: segen
-location_nice: Segenskirche
+location_nice: Segenskirche, Schönhauser Allee, 10435 Berlin
 latitude: 52.53604
 longitude: 13.41198
 altitude: 108
@@ -11,28 +11,33 @@ contacts:
 hosts:
   - hostname: segen-core
     role: corerouter
-    model: "ubnt_edgerouter-x-sfp-24-10"
-    poe_on: [0, 1, 2, 3]
+    model: "genexis_pulse-ex400"
+    wireless_profile: freifunk_default
 
   - hostname: segen-n-nf-2ghz
     role: ap
-    model: ubnt_nanostation-m2_xm
+    model: ubnt_nanostation-m2-xm
 
   - hostname: segen-o-nf-2ghz
     role: ap
-    model: ubnt_nanostation-m2_xm
+    model: ubnt_nanostation-m2-xm
 
   - hostname: segen-s-nf-2ghz
     role: ap
-    model: ubnt_nanostation-m2_xm
+    model: ubnt_nanostation-m2-xm
 
-  - hostname: segen-w-nf-2ghz
+  - hostname: segen-w-nf
     role: ap
-    model: ubnt_nanostation-m2_xm
+    model: "zyxel_nwa55axe"
+    wireless_profile: freifunk_default
 
 snmp_devices:
   - hostname: segen-switch
     address: 10.31.6.2
+    snmp_profile: edgeswitch
+
+  - hostname: segen-switch-2
+    address: 10.31.6.3
     snmp_profile: edgeswitch
 
   # Despite being a 60GHz devices the SNMP-data that is reported is in the same format as the airmax devices
@@ -52,7 +57,7 @@ snmp_devices:
     address: 10.31.6.13
     snmp_profile: airos_6
 
-  - hostname: segen-bht
+  - hostname: segen-fardf
     address: 10.31.6.14
     snmp_profile: airos_8
 
@@ -61,12 +66,8 @@ snmp_devices:
     snmp_profile: airos_8
 
   - hostname: segen-no
-    address: 10.31.6.16
-    snmp_profile: airos_6
-
-  - hostname: segen-wsee
     address: 10.31.6.17
-    snmp_profile: airos_6
+    snmp_profile: airos_8
 
   - hostname: segen-n-5ghz
     address: 10.31.6.20
@@ -78,10 +79,6 @@ snmp_devices:
 
   - hostname: segen-s-5ghz
     address: 10.31.6.22
-    snmp_profile: airos_6
-
-  - hostname: segen-w-5ghz
-    address: 10.31.6.23
     snmp_profile: airos_6
 
 airos_dfs_reset:
@@ -97,7 +94,7 @@ airos_dfs_reset:
     password: "file:/root/pwd"
     daytime_limit: "2-7"
 
-  - name: "segen-bht"
+  - name: "segen-fardf"
     target: "10.31.6.14"
     username: "ubnt"
     password: "file:/root/pwd"
@@ -105,6 +102,12 @@ airos_dfs_reset:
 
   - name: "segen-k12"
     target: "10.31.6.15"
+    username: "ubnt"
+    password: "file:/root/pwd"
+    daytime_limit: "2-7"
+
+  - name: "segen-no"
+    target: "10.31.6.16"
     username: "ubnt"
     password: "file:/root/pwd"
     daytime_limit: "2-7"
@@ -129,28 +132,27 @@ networks:
     assignments:
       segen-core: 1
       segen-switch: 2
+      segen-switch-2: 3
 
       # bbb links
       segen-saarbr: 10
       segen-f2a: 11
       segen-stadalbert: 12
       segen-sw: 13
-      segen-bht: 14
+      segen-fardf: 14
       segen-k12: 15
       segen-no: 16
-      segen-wsee: 17
 
       # airos
       segen-n-5ghz: 20
       segen-o-5ghz: 21
       segen-s-5ghz: 22
-      segen-w-5ghz: 23
 
       # nf
       segen-n-nf-2ghz: 24
       segen-o-nf-2ghz: 25
       segen-s-nf-2ghz: 26
-      segen-w-nf-2ghz: 27
+      segen-w-nf: 27
 
   - vid: 10
     role: dhcp
@@ -175,7 +177,9 @@ networks:
     name: mesh_f2a
     prefix: 10.31.6.65/32
     ipv6_subprefix: -2
-    mesh_metric: 1024
+    # This mitigates issues with f2a announcing a non working gateway
+    # mesh_metric is set to 3072 (tunnel metric) + 4096 (2x 5ghz mesh metric)
+    mesh_metric: 7168
     mesh_metric_lqm:
       - default 0.3
 
@@ -193,7 +197,7 @@ networks:
 
   - vid: 105
     role: mesh
-    name: mesh_bht
+    name: mesh_fardf
     prefix: 10.31.6.68/32
     ipv6_subprefix: -5
 
@@ -208,12 +212,6 @@ networks:
     name: mesh_no
     prefix: 10.31.6.70/32
     ipv6_subprefix: -7
-
-  - vid: 108
-    role: mesh
-    name: mesh_wsee
-    prefix: 10.31.6.71/32
-    ipv6_subprefix: -8
 
   # 11s mesh 2ghz
   - vid: 201
@@ -246,16 +244,6 @@ networks:
     mesh_radio: 11g_standard
     mesh_iface: mesh
 
-  - vid: 204
-    role: mesh
-    name: mesh_11s_w2
-    prefix: 10.31.6.75/32
-    ipv6_subprefix: -12
-    mesh_metric_lqm: ["default 0.4"]
-    mesh_ap: segen-w-nf-2ghz
-    mesh_radio: 11g_standard
-    mesh_iface: mesh
-
   # 5ghz sector mesh
   - vid: 211
     role: mesh
@@ -278,15 +266,8 @@ networks:
     ipv6_subprefix: -15
     mesh_metric: 1024
 
-  - vid: 214
-    role: mesh
-    name: mesh_w5
-    prefix: 10.31.6.79/32
-    ipv6_subprefix: -16
-    mesh_metric: 1024
-
 location__channel_assignments_11g_standard__to_merge:
   segen-n-nf-2ghz: 13-20
   segen-o-nf-2ghz: 13-20
   segen-s-nf-2ghz: 13-20
-  segen-w-nf-2ghz: 13-20
+  segen-w-nf: 13-20

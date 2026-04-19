@@ -5,18 +5,20 @@ location_nice: Stromstraße 2A
 latitude: 52.523268237
 longitude: 13.342632651
 altitude: 55
-community: true
+community: berlin
 
 local_asn: 65023
 peer_asn: 44194
 
 hosts:
   # Thinkcentre M720q, i5-8500T, 16GB RAM, 256GB NVMe
-  # Intel I219 V7 - eth0
-  # ConnectX-4 LX CX4121B - eth1, eth2
+  # Intel I219 V7 - eth2
+  # ConnectX-4 LX CX4121B - eth1, eth0
   - hostname: strom-gw
     role: gateway
+    int_port: eth0 # Corerouter is connected via left FSP+
     model: "x86-64"
+    openwrt_version: 24.10-SNAPSHOT
     image_search_pattern: "*-ext4-combined.img*"
     host__packages__to_merge:
       - kmod-mlx5-core
@@ -24,31 +26,20 @@ hosts:
       # There's a decades-old TX offload bug in intel gigabit controllers
       # which regularly hangs the card. It gets reset automatically,
       # but still results in regular ~15s downtimes. Disable offloads.
-      - ethtool -K eth0 tx off rx off
+      - ethtool -K eth2 tx off rx off
 
 snmp_devices:
   - hostname: strom-poe
     address: 10.31.130.66
-    snmp_profile: tplink
+    snmp_profile: swos
 
   - hostname: strom-perleberger
     address: 10.31.130.67
-    snmp_profile: airos_8
-
-  - hostname: strom-tub
-    address: 10.31.130.68
-    snmp_profile: airos_6
-
-  - hostname: strom-no-5ghz
-    address: 10.31.130.69
-    snmp_profile: airos_6
+    snmp_profile: af60
 
 # Router: 10.31.130.64/26 2001:bf7:750:2a00::/56
 # --MGMT: 10.31.130.64/27
 # --MESH: 10.31.48.1..10 (except 9) {as /32}
-
-# Disable noping as we use dhcp and static assignments
-# both in mgmt network
 
 ipv6_prefix: 2001:bf7:750:2a00::/56
 
@@ -65,13 +56,10 @@ mgmt:
     strom-gw: 1 # .65
     strom-poe: 2 # .66
     strom-perleberger: 3 # .67
-    strom-tub: 4 # .68
-    strom-no-5ghz: 5 # .69
-    # strom-so-5ghz: 6    # .70 (inactive)
 
 # Mesh Network: 10.31.130.96/27
 mesh_links:
-  - name: mesh_tub
+  - name: mesh_local
     ifname: eth0.1308
     ipv4: 10.31.48.1/32
     ipv6: 2001:bf7:750:2a01::/128
@@ -89,11 +77,6 @@ mesh_links:
     # ipv6: 2001:bf7:750:2a03::/128
     mesh_metric: 1024
     ptp: true
-
-  - name: mesh_no
-    ifname: eth0.1399
-    ipv4: 10.31.48.4/32
-    ipv6: 2001:bf7:750:2a04::/128
 
 # OLSR Announce SmartGateway
 sgw: "1000000 1000000"

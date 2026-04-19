@@ -12,6 +12,9 @@ hosts:
   - hostname: lause-core
     role: corerouter
     model: ubnt_usw-flex
+    bird__packages__to_merge:
+      - bird3-babelpatch
+      - bird3c
 
   - hostname: lause-ap1
     role: ap
@@ -59,6 +62,7 @@ networks:
       lause-core: 1
       lause-ap1: 2
       lause-uplink: 3
+      testlab01: 30
 
   - vid: 50
     untagged: true

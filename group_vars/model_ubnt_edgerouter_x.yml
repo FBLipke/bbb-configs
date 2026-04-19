@@ -2,8 +2,7 @@
 target: ramips/mt7621
 brand_nice: Ubiquiti
 model_nice: EdgeRouter X
-
-openwrt_version: 23.05-SNAPSHOT
+openwrt_version: 24.10-SNAPSHOT
 
 dsa_ports:
   - eth0
@@ -11,3 +10,8 @@ dsa_ports:
   - eth2
   - eth3
   - eth4
+
+poe_ports:
+  - name: PoE Passthrough
+    gpio_pin: 512
+    value: 0
